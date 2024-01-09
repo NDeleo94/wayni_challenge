@@ -3,28 +3,56 @@ const { status } = require('../constants/statusCodes');
 const { apiResponse } = require('../helpers/apiResponse');
 const EntityService = require('../services/entity');
 const DebtorService = require('../services/debtor');
-const { getDataDebtors } = require('../helpers/debtorsFile');
+const {
+    getDataDebtors,
+    checkAndAddEntity,
+    checkAndAddDebtor
+} = require('../helpers/debtorsFile');
 
 const uploadFileDebtors = async (req, res) => {
     try {
         const fileContent = req.file.buffer.toString('utf8');
         const lines = fileContent.split('\n');
-        const hola = lines.slice(0, 10)
-        hola.forEach(line => {
-            const { codeEntity, dateInfo, typeId, codeDebtor, activity, situation, sumLoans } = getDataDebtors(line)
-            console.log(codeEntity)
-            console.log(dateInfo)
-            console.log(typeId)
-            console.log(codeDebtor)
-            console.log(activity)
-            console.log(situation)
-            console.log(sumLoans)
+        const entities = []
+        const debtors = []
+
+        lines.forEach(line => {
+            const { entityCode, debtorCode, situation, sumLoans } = getDataDebtors(line)
+            checkAndAddEntity(entities, entityCode, sumLoans)
+            checkAndAddDebtor(debtors, debtorCode, sumLoans, situation)
         })
-        //const sectionA = await SectionTypeAService.createSection(sectionData);
 
-        const response = apiResponse(null, status.created, messages.created)
+        entities.forEach(async (entity) => {
+            try {
+                entity.sumLoans = parseFloat(entity.sumLoans.toFixed(2))
+                const checkEntity = await EntityService.getEntityByCode(entity.entityCode)
+                if (!checkEntity) {
+                    await EntityService.createEntity(entity)
+                } else {
+                    await EntityService.updateEntity(checkEntity._id, entity)
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        })
 
-        return res.status(status.created).json(response);
+        debtors.forEach(async (debtor) => {
+            try {
+                debtor.sumLoans = parseFloat(debtor.sumLoans.toFixed(2))
+                const checkDebtor = await DebtorService.getDebtorByCode(debtor.debtorCode)
+                if (!checkDebtor) {
+                    await DebtorService.createDebtor(debtor)
+                } else {
+                    await DebtorService.updateDebtor(checkDebtor._id, debtor)
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        })
+
+        const response = apiResponse(null, status.success, messages.success)
+
+        return res.status(status.success).json(response);
     } catch (error) {
         const response = apiResponse(null, status.badRequest, messages.badRequest)
 
