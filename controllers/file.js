@@ -6,7 +6,8 @@ const DebtorService = require('../services/debtor');
 const {
     getDataDebtors,
     checkAndAddEntity,
-    checkAndAddDebtor
+    checkAndAddDebtor,
+    checkLine
 } = require('../helpers/debtorsFile');
 
 const uploadFileDebtors = async (req, res) => {
@@ -17,9 +18,11 @@ const uploadFileDebtors = async (req, res) => {
         const debtors = []
 
         lines.forEach(line => {
-            const { entityCode, debtorCode, situation, sumLoans } = getDataDebtors(line)
-            checkAndAddEntity(entities, entityCode, sumLoans)
-            checkAndAddDebtor(debtors, debtorCode, sumLoans, situation)
+            if (checkLine(line)) {
+                const { entityCode, debtorCode, situation, sumLoans } = getDataDebtors(line)
+                checkAndAddEntity(entities, entityCode, sumLoans)
+                checkAndAddDebtor(debtors, debtorCode, sumLoans, situation)
+            }
         })
 
         entities.forEach(async (entity) => {
