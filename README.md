@@ -38,35 +38,47 @@ En el caso de los deudores se guardane el numero de identificacion del cliente, 
 
 ### Observaciones
 En el caso de que se encuentren dos o más entidades diferentes, cada entidad se crea y se guarda con la suma total de prestamos correspondientes.
+
 Por ejemplo:
+```
 Entidad 1, 20
 Entidad 2, 40
 Entidad 1, 40
 Entidad 3, 60
+```
 
 El proyecto va a guardar las siguientes entidades:
+
+```
 Entidad 1, 60
 Entidad 2, 40
 Entidad 3, 60
+```
+
+
 
 En el caso de que se encuentre un deudor repetido (es decir que está asociado a más de una entidad), la suma de prestamos incluye todas las entidades involucradas.
 Además, se considera la situación más alta entre todas las ocurrencias de ese mismo deudor.
 
 Por ejemplo:
+```
 Entidad 1, Deudor 1, 10, Situacion 1
 Entidad 1, Deudor 2, 20, Situacion 2
 Entidad 2, Deudor 3, 30, Situacion 3
 Entidad 2, Duedor 2, 40, Situacion 4
+```
 
 El proyecto va a guardar los siguientes deudores:
+```
 Deudor 1, 10, Situacion 1
 Deudor 2, 60, Situacion 4
 Deudor 3, 30, Situacion 3
+```
 
 ### Consideraciones
 En el proyecto se incluyeron los CRUD de Entidad y Deudor.
 Si bien están implementados, los mismos están incompletos dado que superan el alcance del challenge.
-Entre otras cosas para completarlos, se encuentran las validaciones.
+Entre otras cosas para completarlos, se encuentran las validaciones. Estos métodos son los PUT, POST y DELETE.
 
 En caso de que se suba un archivo que no sea txt, devuelve un error.
 En caso de que alguna fila del archivo no cumpla con el formato establecido, se saltea dicha fila y continua con la siguiente.
