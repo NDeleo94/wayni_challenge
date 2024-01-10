@@ -65,4 +65,16 @@ const checkAndAddDebtor = (debtors, debtorCode, sumLoans, situation) => {
     }
 }
 
-module.exports = { getDataDebtors, checkAndAddEntity, checkAndAddDebtor };
+const checkLine = (line) => {
+    if (line.length !== 171) {
+        return false
+    }
+    return true
+}
+
+module.exports = {
+    getDataDebtors,
+    checkAndAddEntity,
+    checkAndAddDebtor,
+    checkLine,
+};
