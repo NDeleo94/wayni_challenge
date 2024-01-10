@@ -12,7 +12,7 @@ app.use("/api/files", require("./routers/file"))
 app.use("/api/entities", require("./routers/entity"))
 app.use("/api/debtors", require("./routers/debtor"))
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
     console.log(`Server listen on ${PORT}`);
 });
